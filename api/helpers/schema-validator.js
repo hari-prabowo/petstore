@@ -10,7 +10,6 @@ async function validateSchema(obj, schema) {
                 message: `Missing field: ${key}`
             });
             res = false;
-            // throw new Error(`Missing field: ${key}`);
         }
         else {
             const actualType = Array.isArray(obj[key]) ? 'array' : typeof obj[key];
@@ -29,6 +28,18 @@ async function validateSchema(obj, schema) {
                     result: true,
                     message: `Key ${key} is found and has type: ${actualType}`
                 });
+
+                if (actualType === 'object') {
+                    const nestedRes = await validateSchema(obj[key], schema.properties[key]);
+                    for (const nestedItem of nestedRes.resultItems) {
+                        resItems.push({
+                            key: `${key}.${nestedItem.key}`,
+                            result: nestedItem.result,
+                            message: nestedItem.message
+                        });
+                    }
+                    if (nestedRes.result === false) res = false;
+                }
             }
         }
     }
