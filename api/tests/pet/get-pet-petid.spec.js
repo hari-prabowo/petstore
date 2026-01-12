@@ -21,6 +21,15 @@ test.describe('GET /v2/pet - verify getting a specific pet by id', () => {
 
         expect(response.status()).toBe(200);
         expect(resBody.id).toBe(testId);
-        expect(validateSchema(resBody, petSchema)).toBe(true);
+
+        const res = await validateSchema(resBody, petSchema);
+        await testInfo.attach('SCHEMA VALIDATION', {
+            body: JSON.stringify(res.resultItems, null, 2),
+            contentType: 'application/json'
+        });
+
+        expect(res.result).toBe(true, {
+            message: 'Expected response to match expected schema, see SCHEMA VALIDATION in report attachments'
+        });
     });
 });
