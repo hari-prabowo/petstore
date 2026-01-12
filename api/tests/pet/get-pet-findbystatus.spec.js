@@ -32,7 +32,7 @@ test.describe('GET /v2/pet/findByStatus - verify getting list of pets by status'
         log(testInfo, 'REQUEST', `GET ${domain}${api}?status=${status}`, 'text/plain');
         log(testInfo, 'RESPONSE', testResult.response, 'application/json');
 
-        expect(testResult.result).toBe(true);
+        expect(testResult.result).toBe(true, { message: `All items should have status = ${status}` });
     });
 
     test('should only return pets with the status=pending', async ({ request }, testInfo) => {
@@ -42,6 +42,6 @@ test.describe('GET /v2/pet/findByStatus - verify getting list of pets by status'
         log(testInfo, 'REQUEST', `GET ${domain}${api}?status=${status}`, 'text/plain');
         log(testInfo, 'RESPONSE', testResult.response, 'application/json');
 
-        expect(testResult.result).toBe(true);
+        expect(testResult.result).toBe(true, { message: `All items should have status = ${status}` });
     });
 });
