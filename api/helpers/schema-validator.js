@@ -1,16 +1,38 @@
-function validateSchema(obj, schema) {
+async function validateSchema(obj, schema) {
+    let res = true;
+    const resItems = [];
+
     for (const key in schema.properties) {
         if (!(key in obj)) {
-            throw new Error(`Missing field: ${key}`);
+            resItems.push({
+                key: key,
+                result: false,
+                message: `Missing field: ${key}`
+            });
+            res = false;
+            // throw new Error(`Missing field: ${key}`);
         }
-
-        const actualType = Array.isArray(obj[key]) ? 'array' : typeof obj[key];
-        const expectedType = schema.properties[key].type;
-        if (actualType !== expectedType) {
-            throw new Error(`Found ${key} to be of type: ${actualType} instead of expected: ${expectedType}`);
+        else {
+            const actualType = Array.isArray(obj[key]) ? 'array' : typeof obj[key];
+            const expectedType = schema.properties[key].type;
+            if (actualType !== expectedType) {
+                resItems.push({
+                    key: key,
+                    result: false,
+                    message: `Key ${key} is type: ${actualType} instead of expected: ${expectedType}`
+                });
+            res = false;
+            }
+            else {
+                resItems.push({
+                    key: key,
+                    result: true,
+                    message: `Key ${key} is found and has type: ${actualType}`
+                });
+            }
         }
     }
-    return true;
+    return { result: res, resultItems: resItems };
 }
 
 function validateArray(array, type) {
