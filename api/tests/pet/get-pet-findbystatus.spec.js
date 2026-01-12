@@ -1,14 +1,19 @@
 const { test, expect } = require('@playwright/test');
+const domain = process.env.BASE_URL;
+const envName = process.env.ENV;
 
-test.describe.skip('GET /api/v2/pet/findByStatus - verify getting list of pets by status', () => {
+test.describe('GET /v2/pet/findByStatus - verify getting list of pets by status', () => {
     test('should only return pets with the status=available', async ({ request }, testInfo) => {
-        const response = await request.get('https://petstore.swagger.io/v2/pet/findByStatus?status=available');
+
+        console.log(`ENV: ${envName}`);
+        
+        const url = `${domain}/v2/pet/findByStatus?status=available`;
+        const response = await request.get(url);
         expect(response.status()).toBe(200);
 
         const resBody = await response.json();
-
         await testInfo.attach('REQUEST', {
-            body: 'https://petstore.swagger.io/v2/pet/findByStatus?status=available',
+            body: url,
             contentType: 'text/plain'
         });
 
@@ -29,13 +34,14 @@ test.describe.skip('GET /api/v2/pet/findByStatus - verify getting list of pets b
     });
 
     test('should only return pets with the status=pending', async ({ request }, testInfo) => {
-        const response = await request.get('https://petstore.swagger.io/v2/pet/findByStatus?status=pending');
+        const url = `${domain}/v2/pet/findByStatus?status=pending`;
+        const response = await request.get(url);
         expect(response.status()).toBe(200);
 
         const resBody = await response.json();
 
         await testInfo.attach('REQUEST', {
-            body: 'https://petstore.swagger.io/v2/pet/findByStatus?status=pending',
+            body: url,
             contentType: 'text/plain'
         });
 
