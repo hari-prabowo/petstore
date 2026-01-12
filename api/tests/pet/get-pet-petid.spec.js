@@ -5,13 +5,21 @@ const { log } = require('../../helpers/logger');
 const domain = process.env.BASE_URL;
 const envName = process.env.ENV;
 
+async function getAvailablePet(request) {
+    const url = `${domain}/v2/pet/findByStatus?status=available`;
+    const response = await request.get(url);
+    const resBody = await response.json();
+    
+    return resBody[0].id;
+}
+
 test.beforeAll(async () => {
     console.log(`ENV: ${envName}`);
 })
 
 test.describe('GET /v2/pet - verify getting a specific pet by id', () => {
     test('request with valid pet id should return correct schema', async ({ request }, testInfo) => {
-        const testId = 5000;
+        const testId = await getAvailablePet(request);
         const response = await request.get(`${domain}/v2/pet/${testId}`);
 
         log(testInfo, 'REQUEST', `${domain}/v2/pet/${testId}`, 'text/plain');
