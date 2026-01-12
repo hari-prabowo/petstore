@@ -18,7 +18,7 @@ async function validateSchema(obj, schema) {
                 resItems.push({
                     key: key,
                     result: false,
-                    message: `Key ${key} is type: ${actualType} instead of expected: ${expectedType}`
+                    message: `Key ${key} has type: ${actualType} instead of expected: ${expectedType}`
                 });
             res = false;
             }
@@ -26,7 +26,7 @@ async function validateSchema(obj, schema) {
                 resItems.push({
                     key: key,
                     result: true,
-                    message: `Key ${key} is found and has type: ${actualType}`
+                    message: `Key ${key} is found and has expected type: ${actualType}`
                 });
 
                 if (actualType === 'object') {
@@ -40,55 +40,49 @@ async function validateSchema(obj, schema) {
                     }
                     if (nestedRes.result === false) res = false;
                 }
+                else if (actualType === 'array') {
+                    if (typeof obj[key][0] === 'object') {
+                        for (const item of obj[key]) {
+                            const nestedRes = await validateSchema(item, schema.properties[key].items);;
+                            for (const nestedItem of nestedRes.resultItems) {
+                                resItems.push({
+                                    key: `${key}.${nestedItem.key}`,
+                                    result: nestedItem.result,
+                                    message: nestedItem.message
+                                });
+                            }
+                            if (nestedRes.result === false) res = false;
+                        }
+                    }
+                    else {
+                        const resArrayValidation = validateArray(key, obj[key], schema.properties[key].items.type);
+                        resItems.push({
+                            key: resArrayValidation.key,
+                            result: resArrayValidation.result,
+                            message: resArrayValidation.message
+                        });
+                    }
+                }
             }
         }
     }
     return { result: res, resultItems: resItems };
 }
 
-function validateArray(array, type) {
+function validateArray(key, array, type) {
+    const res = true;
+    let message = `Key ${key} has expected type: ${type}`;
     for (const item in array) {
-        if (!(typeof item === 'string')) {
-            throw new Error(`Expected item type ${type} but found ${typeof item} instead`);
+        if (!(typeof item === type)) {
+            result = false;
+            message = `Expected ${key} item type: ${type} but found: ${typeof item} instead`;
+            break;
         }
     }
-    return true;
+    return { key: key, result: res, message: message };
 }
 
 module.exports = { 
     validateSchema,
     validateArray 
 };
-
-// {
-//   "type": "object",
-//   "required": ["id", "name", "photoUrls"],
-//   "properties": {
-//     "id": { "type": "number" },
-//     "name": { "type": "string" },
-//     "photoUrls": { 
-//         "type": "array",
-//         "items": { "type": "string"}
-//     },
-//     "category": {
-//         "type": "object",
-//         "required": ["id", "name"],
-//         "properties": {
-//             "id": {"type": "number"},
-//             "name": {"type": "string"}
-//         }
-//     },
-//     "tags": {
-//         "type": "array",
-//         "items": {
-//             "type": "object",
-//             "required": ["id", "name"],
-//             "properties": {
-//                 "id": {"type": "number"},
-//                 "name": {"type": "string"}
-//             }
-//         }
-//     },
-//     "status": "string"
-//   }
-// }
