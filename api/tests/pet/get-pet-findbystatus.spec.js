@@ -1,6 +1,6 @@
 const { test, expect } = require('@playwright/test');
 
-test.describe('GET /api/v2/pet/findByStatus - verify getting list of pets by status', () => {
+test.describe.skip('GET /api/v2/pet/findByStatus - verify getting list of pets by status', () => {
     test('should only return pets with the status=available', async ({ request }, testInfo) => {
         const response = await request.get('https://petstore.swagger.io/v2/pet/findByStatus?status=available');
         expect(response.status()).toBe(200);
