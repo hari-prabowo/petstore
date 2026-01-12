@@ -4,7 +4,7 @@ const domain = process.env.BASE_URL;
 const envName = process.env.ENV;
 const api = '/v2/pet/findByStatus';
 
-async function verifyFindByStatus(request, status, testInfo) {
+async function verifyFindByStatus(request, status) {
     const url = `${domain}${api}?status=${status}`;
     const response = await request.get(url);
     const resBody = await response.json();
