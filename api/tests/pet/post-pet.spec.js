@@ -70,6 +70,12 @@ test.describe('POST /api/v2/pet - verify valid cases for adding a new pet', () =
             const petResBody = await petResponse.json();
             expect(petResponse.status()).toBe(200);
             expect(petResBody.id).toBe(petId);
+            expect(petResBody.name).toBe(payload.name);
+            expect(petResBody.status).toBe(payload.status);
+
+            expect(petResBody.category).toEqual(payload.category);
+            expect(petResBody.photoUrls).toEqual(payload.photoUrls);
+            expect(petResBody.tags).toEqual(payload.tags);
 
             idsToCleanup.push(petId);
         });
@@ -82,7 +88,7 @@ test.describe('POST /api/v2/pet - verify valid cases for adding a new pet', () =
         };
 
         testInfo.attach('CLEANUP', {
-            body: `SUCCESSFULLY DELETED PET IDS: ${idsToCleanup}`,
+            body: `Successfully deleted Pet IDs: ${idsToCleanup}`,
             contentType: 'text/plain'
         });
     });
