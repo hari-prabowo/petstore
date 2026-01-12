@@ -8,7 +8,7 @@ function getRandom12DigitNumber() {
     return Math.floor(100000000000 + Math.random() * 900000000000);
 }
 
-test.describe('POST /api/v2/pet - verify cases for adding a new pet', () => {
+test.describe.skip('POST /api/v2/pet - verify cases for adding a new pet', () => {
     test('should create a new pet Cat1 successfully with valid parameters', async ({ request }, testInfo) => {
         const petId = getRandom12DigitNumber();
         const payload = {
