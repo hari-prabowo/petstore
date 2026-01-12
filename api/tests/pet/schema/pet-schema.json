@@ -27,6 +27,6 @@
             }
         }
     },
-    "status": "string"
+    "status": { "type": "string"}
   }
 }

@@ -1,7 +1,8 @@
 const { test, expect } = require('@playwright/test');
 
 const idsToCleanup = [];
-const domain = 'https://petstore.swagger.io';
+const domain = process.env.BASE_URL;
+const envName = process.env.ENV;
 const api = '/v2/pet';
 
 function getRandom12DigitNumber() {
@@ -10,6 +11,8 @@ function getRandom12DigitNumber() {
 
 test.describe('POST /api/v2/pet - verify cases for adding a new pet', () => {
     test('should create a new pet Cat1 successfully with valid parameters', async ({ request }, testInfo) => {
+        console.log(`ENV: ${envName}`);
+        
         const petId = getRandom12DigitNumber();
         const payload = {
             id: petId,
@@ -41,11 +44,11 @@ test.describe('POST /api/v2/pet - verify cases for adding a new pet', () => {
         const resBody = await response.json();
 
         await testInfo.attach('REQUEST', {
-            body: {
+            body: JSON.stringify({
                 method: 'POST',
                 url: `${domain}${api}`,
                 options: options
-            },
+            }, null, 2),
             contentType: 'application/json'
         });
 
@@ -98,11 +101,11 @@ test.describe('POST /api/v2/pet - verify cases for adding a new pet', () => {
         const resBody = await response.json();
 
         await testInfo.attach('REQUEST', {
-            body: {
+            body: JSON.stringify({
                 method: 'POST',
                 url: `${domain}${api}`,
                 options: options
-            },
+            }, null, 2),
             contentType: 'application/json'
         });
 
