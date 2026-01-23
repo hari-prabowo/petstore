@@ -2,13 +2,17 @@ const { test, expect } = require('@playwright/test');
 const  {validateSchema } = require('../../helpers/schema-validator');
 const petSchema = require('./schema/pet-schema.json');
 const { log } = require('../../helpers/logger');
+const { getBigIntJson } = require('../../helpers/helper');
 const domain = process.env.BASE_URL;
 const envName = process.env.ENV;
 
-async function getAvailablePet(request) {
+async function getAvailablePet(request, testInfo) {
     const url = `${domain}/v2/pet/findByStatus?status=available`;
     const response = await request.get(url);
-    const resBody = await response.json();
+    const resBody = await getBigIntJson(response);
+
+    log(testInfo, 'getAvailablePet REQUEST', url, 'text/plain');
+    log(testInfo, 'getAvailablePet RESPONSE', resBody, 'application/json');
     
     return resBody[0].id;
 }
@@ -19,7 +23,8 @@ test.beforeAll(async () => {
 
 test.describe('GET /v2/pet - verify getting a specific pet by id', () => {
     test('request with valid pet id should return correct schema', async ({ request }, testInfo) => {
-        const testId = await getAvailablePet(request);
+        // const testId = await getAvailablePet(request, testInfo);
+        const testId = 465;
         const response = await request.get(`${domain}/v2/pet/${testId}`);
 
         log(testInfo, 'REQUEST', `${domain}/v2/pet/${testId}`, 'text/plain');

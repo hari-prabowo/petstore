@@ -1,9 +1,17 @@
+async function isKeyRequired(key, schema) {
+    if (!('required' in schema) || schema.required.length === 0) return false;
+    return schema.required.includes(key);
+}
+
 async function validateSchema(obj, schema) {
     let res = true;
     const resItems = [];
 
     for (const key in schema.properties) {
-        if (!(key in obj)) {
+        const keyRequired = await isKeyRequired(key, schema);
+        const keyExists = key in obj;
+
+        if (keyRequired && !keyExists) {
             resItems.push({
                 key: key,
                 result: false,
@@ -11,7 +19,7 @@ async function validateSchema(obj, schema) {
             });
             res = false;
         }
-        else {
+        else if(keyExists) {
             const actualType = Array.isArray(obj[key]) ? 'array' : typeof obj[key];
             const expectedType = schema.properties[key].type;
             if (actualType !== expectedType) {
@@ -55,7 +63,7 @@ async function validateSchema(obj, schema) {
                         }
                     }
                     else {
-                        const resArrayValidation = validateArray(key, obj[key], schema.properties[key].items.type);
+                        const resArrayValidation = await validateArray(key, obj[key], schema.properties[key].items.type);
                         resItems.push({
                             key: resArrayValidation.key,
                             result: resArrayValidation.result,
@@ -69,7 +77,7 @@ async function validateSchema(obj, schema) {
     return { result: res, resultItems: resItems };
 }
 
-function validateArray(key, array, type) {
+async function validateArray(key, array, type) {
     const res = true;
     let message = `Key ${key} has expected type: ${type}`;
     for (const item in array) {

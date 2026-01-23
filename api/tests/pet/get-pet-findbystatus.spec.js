@@ -10,13 +10,6 @@ async function verifyFindByStatus(request, status) {
     const resBody = await response.json();
 
     const allStatusCorrect = resBody.every(pet => pet.status === status);
-    // let allStatusCorrect = true;
-    // for (const pet of resBody) {
-    //     if (pet.status !== status) {
-    //         allStatusCorrect = false;
-    //         break;
-    //     }
-    // }
 
     return {result: allStatusCorrect, response: resBody};
 }
