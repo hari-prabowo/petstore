@@ -3,7 +3,7 @@ async function isKeyRequired(key, schema) {
     return schema.required.includes(key);
 }
 
-async function validateSchema(obj, schema) {
+export async function validateSchema(obj, schema) {
     let res = true;
     const resItems = [];
 
@@ -77,7 +77,7 @@ async function validateSchema(obj, schema) {
     return { result: res, resultItems: resItems };
 }
 
-async function validateArray(key, array, type) {
+export async function validateArray(key, array, type) {
     const res = true;
     let message = `Key ${key} has expected type: ${type}`;
     for (const item in array) {
@@ -89,8 +89,3 @@ async function validateArray(key, array, type) {
     }
     return { key: key, result: res, message: message };
 }
-
-module.exports = { 
-    validateSchema,
-    validateArray 
-};

@@ -1,5 +1,5 @@
-const { defineConfig } = require('@playwright/test');
-const { config } = require('dotenv');
+import { defineConfig } from '@playwright/test';
+import { config } from 'dotenv';
 
 // use .env by default, or .env.${TEST_ENV} if provided in command line
 const env = process.env.TEST_ENV;
@@ -10,8 +10,10 @@ if (env) {
 }
 
 // always write html report file
-module.exports = defineConfig({
+export default defineConfig({
   reporter: [
     ['html', { open: 'never' }]
   ],
+  workers: process.env.CI ? 1 : 3,
+  fullyParallel: false,
 });

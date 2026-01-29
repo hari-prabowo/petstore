@@ -1,8 +1,9 @@
-const { test, expect } = require('@playwright/test');
-const  {validateSchema } = require('../../helpers/schema-validator');
-const petSchema = require('./schema/pet-schema.json');
-const { log } = require('../../helpers/logger');
-const { getBigIntJson } = require('../../helpers/helper');
+import { test, expect } from '@playwright/test';
+import { validateSchema } from '../../helpers/schema-validator';
+import { log } from '../../helpers/logger';
+import { getBigIntJson } from '../../helpers/helper';
+import petSchema from './schema/pet-schema.json' assert {type: 'json'};
+
 const domain = process.env.BASE_URL;
 const envName = process.env.ENV;
 
@@ -23,8 +24,7 @@ test.beforeAll(async () => {
 
 test.describe('GET /v2/pet - verify getting a specific pet by id', () => {
     test('request with valid pet id should return correct schema', async ({ request }, testInfo) => {
-        // const testId = await getAvailablePet(request, testInfo);
-        const testId = 465;
+        const testId = await getAvailablePet(request, testInfo);
         const response = await request.get(`${domain}/v2/pet/${testId}`);
 
         log(testInfo, 'REQUEST', `${domain}/v2/pet/${testId}`, 'text/plain');

@@ -1,5 +1,5 @@
-const { test, expect } = require('@playwright/test');
-const { log } = require('../../helpers/logger');
+import { test, expect } from '@playwright/test';
+import { log } from '../../helpers/logger';
 
 const idsToCleanup = [];
 const domain = process.env.BASE_URL;

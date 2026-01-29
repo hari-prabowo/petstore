@@ -1,4 +1,4 @@
-async function log(testInfo, name, content, contentType) {
+export async function log(testInfo, name, content, contentType) {
     if (contentType === 'text/plain') {
         await testInfo.attach(name, {
             body: content,
@@ -11,8 +11,4 @@ async function log(testInfo, name, content, contentType) {
             contentType: contentType
         })
     }
-}
-
-module.exports = {
-    log
 }
